@@ -1,5 +1,5 @@
 package com.ust.catastro.clients;
 
-public class CatastroDetailClient {
+public interface CatastroDetailClient {
 
 }

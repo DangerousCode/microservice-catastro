@@ -1,5 +1,5 @@
 package com.ust.catastro.services;
 
-public class CatastroDetailService {
+public interface CatastroDetailService {
 
 }

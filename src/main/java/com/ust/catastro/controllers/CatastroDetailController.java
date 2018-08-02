@@ -1,5 +1,5 @@
 package com.ust.catastro.controllers;
 
-public class CatastroDetailController {
+public interface CatastroDetailController {
 
 }
