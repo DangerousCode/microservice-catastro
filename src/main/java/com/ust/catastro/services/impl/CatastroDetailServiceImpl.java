@@ -16,11 +16,11 @@ public class CatastroDetailServiceImpl implements CatastroDetailService{
 
 	private final CatastroDetailClient catastroDetailClient;
 	private final CatastroSoapToCatastroDetail catastroSoapToCatastroDetail;
+	
 	@Override
-	public CatastroDetail findCadastreByRefCatastro(String refCatastro) {
-		
+	public CatastroDetail getCatastroDetail(String refCatastro) {
 		CatastroDetail catastroDetail = new CatastroDetail();
-		catastroDetailClient.getCatstroDetail(refCatastro);
+		catastroDetailClient.getCatastroDetail(refCatastro);
 //		catastroDetail = catastroSoapToCatastroDetail.convert();
 		
 		return catastroDetail;
