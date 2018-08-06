@@ -23,12 +23,50 @@ public class CatastroDetailClientImpl extends WebServiceGatewaySupport implement
 
 	//@Override
 	public CatastroSoap getCatastroDetail(String refCatastro) {
+		/*
+			Lo siguiente es un ejemplo genérico tanto de petición como respuesta SOAP. las marcas mostradas necesitan ser sustituidas por valores reales.
+
+			POST /ovcservweb/ovcswlocalizacionrc/ovccallejero.asmx HTTP/1.1
+			Host: ovc.catastro.meh.es
+			Content-Type: text/xml; charset=utf-8
+			Content-Length: length
+			SOAPAction: "http://tempuri.org/OVCServWeb/OVCCallejero/Consulta_DNPRC"
+
+			<?xml version="1.0" encoding="utf-8"?>
+			<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  			<soap:Body>
+    			<Provincia xmlns="http://www.catastro.meh.es/">string</Provincia>
+    			<Municipio xmlns="http://www.catastro.meh.es/">string</Municipio>
+    			<RefCat xmlns="http://www.catastro.meh.es/">string</RefCat>
+  			</soap:Body>
+			</soap:Envelope>
+			HTTP/1.1 200 OK
+			Content-Type: text/xml; charset=utf-8
+			Content-Length: length
+
+			<?xml version="1.0" encoding="utf-8"?>
+			<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  			<soap:Body>
+    			<Consulta_DNP xmlns="http://www.catastro.meh.es/">xml</Consulta_DNP>
+  			</soap:Body>
+			</soap:Envelope>
+		 */
 		
-		List<String> request = new ArrayList<String>();
-		request.add(refCatastro);
+		
+		String request = new String(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+				+ "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+				+   "<soap:Body>"
+				+    "<Provincia xmlns=\"http://www.catastro.meh.es/\"></Provincia>"
+				+    "<Municipio xmlns=\"http://www.catastro.meh.es/\"></Municipio>"
+				+    "<RefCat xmlns=\"http://www.catastro.meh.es/\">0847106VK4704F0008HP</RefCat>"
+				+  "</soap:Body>"
+				+ "</soap:Envelope"				
+				);
+		
 		
 		Object response = (Object) getWebServiceTemplate()
-				.marshalSendAndReceive("http://ovc.catastro.meh.es/ovcservweb/OVCSWLocalizacionRC/OVCCallejero.asmx?wsdl", request, null);
+				.marshalSendAndReceive("http://tempuri.org/OVCServWeb/OVCCallejero/Consulta_DNPRC", request, null);
 
 		return null; // TODO
 	}
