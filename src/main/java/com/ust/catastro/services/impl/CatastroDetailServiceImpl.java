@@ -19,9 +19,9 @@ public class CatastroDetailServiceImpl implements CatastroDetailService {
 	}	
 	
 	//@Override
-	public CatastroDetail getCatastroDetail(final String refCatastro) {
-		CatastroSoap response = catastroDetailClient.getCatastroDetail(refCatastro);
-		return null; // TODO
+	public Double getCatastroDetail(final String refCatastro) {
+		Double response = catastroDetailClient.getCatastroDetail(refCatastro);
+		return response;
 	}
 
 }

@@ -1,74 +1,69 @@
 package com.ust.catastro.clients.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+
+import javax.xml.soap.SOAPEnvelope;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.client.core.WebServiceMessageCallback;
+import org.springframework.ws.client.core.WebServiceMessageExtractor;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.saaj.SaajSoapMessage;
+import org.w3c.dom.DOMException;
 
 import com.ust.catastro.clients.CatastroDetailClient;
-import com.ust.catastro.clients.entity.CatastroSoap;
 
 @Service
 public class CatastroDetailClientImpl extends WebServiceGatewaySupport implements CatastroDetailClient {
-	
-	
-	
+
+	private static final String ACTION = "http://tempuri.org/OVCServWeb/OVCCallejero/Consulta_DNPRC";
+
 	public CatastroDetailClientImpl(Jaxb2Marshaller marshaller) {
-		this.setDefaultUri("http://localhost:8083/ws");
-		this.setMarshaller(marshaller);
-		this.setUnmarshaller(marshaller);
+		this.setDefaultUri("http://ovc.catastro.meh.es/ovcservweb/ovcswlocalizacionrc/ovccallejero.asmx");
 	}
 
-	//@Override
-	public CatastroSoap getCatastroDetail(String refCatastro) {
-		/*
-			Lo siguiente es un ejemplo genérico tanto de petición como respuesta SOAP. las marcas mostradas necesitan ser sustituidas por valores reales.
+	// @Override
+	public Double getCatastroDetail(String refCatastro) {
 
-			POST /ovcservweb/ovcswlocalizacionrc/ovccallejero.asmx HTTP/1.1
-			Host: ovc.catastro.meh.es
-			Content-Type: text/xml; charset=utf-8
-			Content-Length: length
-			SOAPAction: "http://tempuri.org/OVCServWeb/OVCCallejero/Consulta_DNPRC"
+		String surface = (String) getWebServiceTemplate().sendAndReceive(getDefaultUri(),
+				new WebServiceMessageCallback() {
 
-			<?xml version="1.0" encoding="utf-8"?>
-			<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  			<soap:Body>
-    			<Provincia xmlns="http://www.catastro.meh.es/">string</Provincia>
-    			<Municipio xmlns="http://www.catastro.meh.es/">string</Municipio>
-    			<RefCat xmlns="http://www.catastro.meh.es/">string</RefCat>
-  			</soap:Body>
-			</soap:Envelope>
-			HTTP/1.1 200 OK
-			Content-Type: text/xml; charset=utf-8
-			Content-Length: length
+					public void doWithMessage(WebServiceMessage message) {
 
-			<?xml version="1.0" encoding="utf-8"?>
-			<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  			<soap:Body>
-    			<Consulta_DNP xmlns="http://www.catastro.meh.es/">xml</Consulta_DNP>
-  			</soap:Body>
-			</soap:Envelope>
-		 */
-		
-		
-		String request = new String(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-				+ "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-				+   "<soap:Body>"
-				+    "<Provincia xmlns=\"http://www.catastro.meh.es/\"></Provincia>"
-				+    "<Municipio xmlns=\"http://www.catastro.meh.es/\"></Municipio>"
-				+    "<RefCat xmlns=\"http://www.catastro.meh.es/\">0847106VK4704F0008HP</RefCat>"
-				+  "</soap:Body>"
-				+ "</soap:Envelope"				
-				);
-		
-		
-		Object response = (Object) getWebServiceTemplate()
-				.marshalSendAndReceive("http://tempuri.org/OVCServWeb/OVCCallejero/Consulta_DNPRC", request, null);
+						try {
+							SaajSoapMessage saajMessage = (SaajSoapMessage) message;
+							saajMessage.setSoapAction(ACTION);
+							SOAPMessage soapmess = saajMessage.getSaajMessage();
+							SOAPEnvelope env = soapmess.getSOAPPart().getEnvelope();
+							env.addNamespaceDeclaration("cat", "http://www.catastro.meh.es/");
+							env.getBody().addChildElement("RefCat", "cat").addTextNode(refCatastro.trim());
+						} catch (Exception e) {
+							throw new RuntimeException("Marshalling exception", e);
+						}
+					}
 
-		return null; // TODO
+				}, new WebServiceMessageExtractor<Object>() {
+					public String extractData(WebServiceMessage response) throws IOException {
+						SaajSoapMessage saajMessage = (SaajSoapMessage) response;
+						SOAPMessage soapmess = saajMessage.getSaajMessage();
+						String value;
+						try {
+							value = soapmess.getSOAPBody().getElementsByTagName("stl").item(0).getTextContent();
+						} catch (DOMException e) {
+							throw new RuntimeException("Marshalling exception", e);
+						} catch (SOAPException e) {
+							throw new RuntimeException("Marshalling exception", e);
+						}
+						return value;
+					}
+
+				});
+
+		return Double.valueOf(surface);
 	}
 
 }

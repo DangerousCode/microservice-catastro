@@ -5,6 +5,6 @@ import com.ust.catastro.model.CatastroDetail;
 
 public interface CatastroDetailController {
 	
-	public ResponseEntity<CatastroDetail> getCatastroDetail(final String refCatastro);
+	public ResponseEntity<Double> getCatastroDetail(final String refCatastro);
 
 }

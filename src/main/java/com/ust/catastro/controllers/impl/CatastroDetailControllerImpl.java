@@ -36,9 +36,9 @@ public class CatastroDetailControllerImpl implements CatastroDetailController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "catastro detailed info retrieved") })
 	@GetMapping("/catastro/{refCatastro}")
 	//@Override
-	public ResponseEntity<CatastroDetail> getCatastroDetail(@PathVariable(required=true) final String refCatastro) {
+	public ResponseEntity<Double> getCatastroDetail(@PathVariable(required=true) final String refCatastro) {
 		
-		return new ResponseEntity<CatastroDetail>(catastroDetailService.getCatastroDetail(refCatastro),HttpStatus.OK);
+		return new ResponseEntity<Double>(catastroDetailService.getCatastroDetail(refCatastro),HttpStatus.OK);
 		
 	}
 

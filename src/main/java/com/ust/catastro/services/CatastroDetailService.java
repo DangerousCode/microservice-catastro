@@ -4,6 +4,6 @@ import com.ust.catastro.model.CatastroDetail;
 
 public interface CatastroDetailService {
 	
-	public CatastroDetail getCatastroDetail(final String refCatastro);
+	public Double getCatastroDetail(final String refCatastro);
 
 }
