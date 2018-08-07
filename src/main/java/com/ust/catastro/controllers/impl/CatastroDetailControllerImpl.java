@@ -1,5 +1,6 @@
 package com.ust.catastro.controllers.impl;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +29,11 @@ public class CatastroDetailControllerImpl implements CatastroDetailController {
 	})
 	@Override
 	public ResponseEntity<CatastroDetail> getCatastroDetail(@PathVariable("refCatastro")String refCatastro) {
-		// TODO Auto-generated method stub
-		return null;
+		CatastroDetail catastroDetail = new CatastroDetail();
+		catastroDetail.setRefCatastro(refCatastro);
+		catastroDetail.setSuperficie(100.00);
+		catastroDetail.setTipoUso("VIVIENDA");
+		return new ResponseEntity<CatastroDetail>(catastroDetail, HttpStatus.OK);
 	}
 
 }
